@@ -100,6 +100,8 @@
     RNGridMenu *av = [[RNGridMenu alloc] initWithItems:[items subarrayWithRange:NSMakeRange(0, numberOfOptions)]];
     av.delegate = self;
 //    av.bounces = NO;
+    av.itemSize = CGSizeMake(75, 75);
+    av.numberOfRows = 5;
     [av showInViewController:self center:CGPointMake(self.view.bounds.size.width/2.f, self.view.bounds.size.height/2.f)];
 }
 

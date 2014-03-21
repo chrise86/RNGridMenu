@@ -362,6 +362,8 @@ static RNGridMenu *rn_visibleGridMenu;
         _menuView = [UIView new];
         _backgroundColor = [UIColor colorWithWhite:0 alpha:0.7];
         _bounces = YES;
+        _numberOfColumns = -1;
+        _numberOfRows = -1;
 
         BOOL hasImages = [items filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(RNGridMenuItem *item, NSDictionary *bindings) {
             return item.image != nil;
@@ -546,17 +548,30 @@ static RNGridMenu *rn_visibleGridMenu;
 
 - (void)layoutAsGrid {
     NSInteger itemCount = self.items.count;
-    NSInteger rowCount = ceilf(sqrtf(itemCount));
+    
+    NSInteger rowCount;
+    NSInteger columnCount;
+    
+    if(self.numberOfColumns > 0) {
+        columnCount = self.numberOfColumns;
+        rowCount = ceilf(itemCount / (CGFloat)columnCount);
+    } else if(self.numberOfRows > 0) {
+        rowCount = self.numberOfRows;
+        columnCount = ceilf(itemCount / (CGFloat)rowCount);
+    } else {
+        rowCount = ceilf(sqrtf(itemCount));
+        columnCount = ceilf(itemCount / (CGFloat)rowCount);
+    }
 
-    CGFloat height = self.itemSize.height * rowCount;
-    CGFloat width = self.itemSize.width * ceilf(itemCount / (CGFloat)rowCount);
-    CGFloat itemHeight = floorf(height / (CGFloat)rowCount);
+    CGFloat itemHeight = self.itemSize.height;
+    CGFloat height = itemHeight * rowCount;
+    CGFloat width = self.itemSize.width * columnCount;
     CGFloat headerOffset = self.headerView.bounds.size.height;
 
     self.menuView.frame = [self menuFrameWithWidth:width height:height center:self.menuCenter headerOffset:headerOffset];
 
     for (NSInteger i = 0; i < rowCount; i++) {
-        NSInteger rowLength = ceilf(itemCount / (CGFloat)rowCount);
+        NSInteger rowLength = columnCount;
         NSInteger rowStartIndex = i * rowLength;
 
         if ((i + 1) * rowLength > itemCount) {

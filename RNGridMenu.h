@@ -98,6 +98,14 @@ typedef NS_ENUM(NSInteger, RNGridMenuStyle) {
 // default RNGridMenuStyleGrid
 @property (nonatomic, assign) RNGridMenuStyle menuStyle;
 
+// Optional number of row or columns in the menu
+// If none is set the values are computed from the number of items
+// If one is set, the other is derivated from the number of items
+// If both are set, only the number of columns is used
+@property (nonatomic) NSInteger numberOfColumns;
+@property (nonatomic) NSInteger numberOfRows;
+
+
 // An optional header view. Make sure to set the frame height when setting.
 @property (nonatomic, strong) UIView *headerView;
 
